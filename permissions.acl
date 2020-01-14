@@ -1,0 +1,123 @@
+/**
+ * Access control rules for record-book
+ */
+rule NetworkAdmin {
+    description: "Allow all participants access to all resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule SystemAdmin {
+    description:  "System ACL to permit all access"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule SystemACL {
+    description:  "System ACL to permit all access"
+    participant: "ANY"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule TeacherReadSubjectRule {
+    description:  "TeacherReadSubjectRule"
+    participant: "by.bsuir.fksis.recordbook.Teacher"
+    operation: READ
+    resource: "by.bsuir.fksis.recordbook.Subject"
+    action: ALLOW
+}
+
+rule StudentReadSubjectRule {
+    description:  "StudentReadSubjectRule"
+    participant: "by.bsuir.fksis.recordbook.Student"
+    operation: READ
+    resource: "by.bsuir.fksis.recordbook.Subject"
+    action: ALLOW
+}
+
+rule StudentReadAssessmentRule {
+    description:  "StudentReadAssessmentRule"
+    participant(s): "by.bsuir.fksis.recordbook.Student"
+    operation: READ
+    resource(r): "by.bsuir.fksis.recordbook.Assessment"
+    condition: (s.studentId == r.student.studentId)
+    action: ALLOW
+}
+
+rule StudentReadStudentRule {
+    description:  "StudentReadStudentRule"
+    participant(s): "by.bsuir.fksis.recordbook.Student"
+    operation: READ
+    resource(r): "by.bsuir.fksis.recordbook.Student"
+    condition: (s.studentId == r.studentId)
+    action: ALLOW
+}
+
+rule TeacherReadStudentRule {
+    description:  "TeacherReadStudentRule"
+    participant: "by.bsuir.fksis.recordbook.Teacher"
+    operation: READ
+    resource: "by.bsuir.fksis.recordbook.Student"
+    action: ALLOW
+}
+
+rule TeacherReadTeacherRule {
+    description:  "TeacherReadTeacherRule"
+    participant(p): "by.bsuir.fksis.recordbook.Teacher"
+    operation: READ
+    resource(r): "by.bsuir.fksis.recordbook.Teacher"
+    condition: (p.teacherId == r.teacherId)
+    action: ALLOW
+}
+
+rule TeacherReadAssessmentRule {
+    description:  "TeacherReadAssessmentRule"
+    participant(p): "by.bsuir.fksis.recordbook.Teacher"
+    operation: READ
+    resource(r): "by.bsuir.fksis.recordbook.Assessment"
+    condition: (p.teacherId == r.teacher.teacherId)
+    action: ALLOW
+}
+
+rule CreateAssessmentTransactionRule {
+    description: "CreateAssessmentTransactionRule"
+    participant(p): "by.bsuir.fksis.recordbook.Teacher"
+    operation: CREATE
+    resource(r): "by.bsuir.fksis.recordbook.CreateAssessment"
+    condition: (r.teacherId == p.teacherId)
+    action: ALLOW
+}
+
+rule CreateAssessmentRule {
+    description: "CreateAssessmentRule"
+    participant(p): "by.bsuir.fksis.recordbook.Teacher"
+    operation: CREATE
+    resource: "by.bsuir.fksis.recordbook.Assessment"
+    transaction(tx): "by.bsuir.fksis.recordbook.CreateAssessment"
+    condition: (tx.teacherId == p.teacherId)
+    action: ALLOW
+}
+
+rule CreateRateStransactionRule {
+    description: "CreateRateStransactionRule"
+    participant: "by.bsuir.fksis.recordbook.Teacher"
+    operation: CREATE
+    resource: "by.bsuir.fksis.recordbook.Rate"
+    action: ALLOW
+}
+
+rule RateStudentRule {
+    description: "RateStudentRule"
+    participant(p): "by.bsuir.fksis.recordbook.Teacher"
+    operation: UPDATE
+    resource(r): "by.bsuir.fksis.recordbook.Assessment"
+    transaction(tx): "by.bsuir.fksis.recordbook.Rate"
+    condition: (r.teacher.teacherId == p.teacherId)
+    action: ALLOW
+}

@@ -1,0 +1,42 @@
+/**
+ * Record book network
+ */
+namespace by.bsuir.fksis.recordbook
+
+asset Subject identified by subjectId {
+  o String subjectId
+  o String name
+}
+
+asset Assessment identified by assessmentId {
+  o String assessmentId
+  o Integer attempt
+  o Integer rating
+  --> Student student
+  --> Subject subject
+  --> Teacher teacher
+}
+
+participant Student identified by studentId {
+  o String studentId
+  o String firstName
+  o String lastName
+}
+
+participant Teacher identified by teacherId {
+  o String teacherId
+  o String firstName
+  o String lastName
+}
+
+transaction CreateAssessment {
+  o String assessmentId
+  o String teacherId
+  o String subjectId
+  o String studentId
+}
+
+transaction Rate {
+  o String assessmentId
+  o Integer rating
+}
